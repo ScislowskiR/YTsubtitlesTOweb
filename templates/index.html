@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Flask Application</title>
+    <style>
+        .row {
+            display: flex;
+            justify-content: center; /* This will center the columns horizontally */
+        }
+
+        .my-button {
+            background-color: #04AA6D; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .column {
+            padding: 10px;
+        }
+
+        .thin-column {
+            flex: 6%; /* Adjust this value as needed */
+            background-color: #ccc; /* Adjust this value as needed */
+        }
+
+        .main-column {
+            flex: 47%; /* Adjust this value as needed */
+            background-color: #aaa; /* Adjust this value as needed */
+        }
+
+        .right-column {
+            flex: 47%; /* Adjust this value as needed */
+            background-color: #bbb; /* Adjust this value as needed */
+        }
+
+        /* Add this style for the footer */
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f2f2f2;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to my Flask application!</h1>
+    <p>This is the home page.</p>
+    <!-- <button>Menu</button> This is the new menu button -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $("#folderDropdown").change(function(){
+            var folder = $(this).val();
+            $.post("/get_files", {folder: folder}, function(data){
+                var fileDropdown = $("#fileDropdown");
+                fileDropdown.empty();
+                $.each(data, function(i, file){
+                    fileDropdown.append($("<option>").val(file).text(file));
+                }); 
+            });
+        });
+    });
+    </script>
+
+    <select id="folderDropdown" name="folderDropdown">
+        <option selected disabled>Select a folder</option>
+        {% for folder in folders %}
+            <option value="{{ folder }}">{{ folder }}</option>
+        {% endfor %}
+    </select>
+
+    <select id="fileDropdown" name="fileDropdown">
+        <option selected disabled>Select a file</option>
+    </select>
+    <button id="openVideo">Open Video</button>
+    <script>
+    $(document).ready(function(){
+        $("#folderDropdown").change(function(){
+            var folder = $(this).val();
+            $.post("/get_files", {folder: folder}, function(data){
+                var fileDropdown = $("#fileDropdown");
+                fileDropdown.empty();
+                $.each(data, function(i, file){
+                    fileDropdown.append($("<option>").val(file).text(file));
+                });
+            });
+        });
+
+        $("#fileDropdown").change(function(){
+            var file = $(this).val();
+            var videoNumber = file.split('+')[1].split('.')[0];  // Extract the YouTube video number
+            var videoLink = "https://www.youtube.com/watch?v=" + videoNumber;  // Form the YouTube video link
+
+            // Set the click event handler of the button to print the videoLink to the console
+            $("#openVideo").off('click').click(function(){
+                console.log(videoLink);
+            });
+        });
+    });
+    </script>
+    <button id="openGoogle">Open Google</button>
+    <script>
+    $(document).ready(function(){
+        $("#openGoogle").click(function(){
+            window.open("https://www.google.com", '_blank');  // Open Google in a new tab
+            console.log("Google opened");
+        });
+    });
+    </script>
+    <div class="row">
+        <div class="column thin-column">
+        </div>
+        <div class="column main-column">
+            <!-- Add 100 buttons here-->
+            {% for i in range(100) %}
+                    <div class="my-button-frame">
+                        <!-- <button class="my-button"> {{ i+1 }}</button><br>-->
+                    </div>
+            {% endfor %}
+        </div>
+        <div class="column right-column">
+        </div>
+    </div>
+    <!-- This is the new footer -->
+    <footer>
+        <p>Copyright &copy; 2023 My Flask Application</p>
+    </footer>
+</body>
+</html>
